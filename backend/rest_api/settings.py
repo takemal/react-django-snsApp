@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,13 +37,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api.apps.ApiConfig',
-    'rest_framework', 
-    'corsheaders', 
-    'djoser',
+    'api.apps.ApiConfig', #アプリ名=api
+    'api_dm.apps.ApiDmConfig', #アプリ名=api
+    'core.apps.CoreConfig', #アプリ名=api
+    'rest_framework', #DRF使用
+    'corsheaders',  # CORS設定
+    'djoser',#ユーザ認証周り
+	'rest_framework.authtoken', #token認証使用時
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', #追加
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -51,6 +55,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000"
 ]
 
 ROOT_URLCONF = 'rest_api.urls'
@@ -108,8 +116,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'Asia/Tokyo'
 
-TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -122,3 +130,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# アップロードファイルなどを読み込む際のフォルダの場所を記述
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# サービス内でmediaフォルダのURLパスを設定
+MEDIA_URL = '/media/'
+
+AUTH_USER_MODEL = 'core.User'
